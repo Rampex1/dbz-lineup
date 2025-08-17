@@ -25,10 +25,10 @@ def parse_csv(filepath: str) -> List[Person]:
         reader = csv.DictReader(csvfile)
         for row in reader:
             person = Person(
-                name=row["name"],
-                gender=row["gender"],
-                weight=float(row["weight"]),
-                side=row["side"]
+                name=row["Name"],
+                gender=row["Gender"],
+                side=row["Side"],
+                weight = float(row["Weight"])
             )
             people.append(person)
     return people
@@ -61,9 +61,6 @@ def build_boat(people: List[Person], boats: List[Boat]) -> Dict[int, Tuple[List[
     for i, boat in enumerate(boats):
         if boat.size % 2 != 0:
             raise ValueError(f"Boat {i} has odd size {boat.size}. All boats must have even sizes for left/right split.")
-        if boat.gender == "Mixed" and boat.size % 4 != 0:
-            raise ValueError(
-                f"Mixed boat {i} has size {boat.size}. Mixed boats must have size divisible by 4 (half male, half female, then split left/right).")
 
     # Create the optimization problem
     prob = LpProblem("Multi_Boat_Selection", LpMinimize)
@@ -169,10 +166,9 @@ def build_boat(people: List[Person], boats: List[Boat]) -> Dict[int, Tuple[List[
 
     return result
 
-
 # Example usage:
 if __name__ == "__main__":
-    data = parse_csv("roster1.csv")
+    data = parse_csv("roster.csv")
 
     # Example boats
     boats = [

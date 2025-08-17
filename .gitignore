@@ -37,7 +37,7 @@ Thumbs.db
 /package.json
 /package-lock.json
 
-# Unused duplicate CSV in CRA public (backend reads root roster1.csv)
+# Unused duplicate CSV in CRA public (backend reads root roster.csv)
 /dbz-lineup/public/roster.csv
 # Dependency directories
 node_modules/
