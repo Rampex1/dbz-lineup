@@ -1,4 +1,12 @@
 Flask==3.0.3
 flask-cors==4.0.1
-PuLP==2.8.0
+PuLP~=3.2.2
 
+
+pip~=25.1
+attrs~=25.3.0
+PySocks~=1.7.1
+typing_extensions~=4.14.1
+setuptools~=65.5.0
+packaging~=25.0
+pandas~=2.3.1

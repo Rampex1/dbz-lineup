@@ -10,7 +10,7 @@ CORS(app)
 @app.route('/people', methods=['GET'])
 def list_people():
     try:
-        people = parse_csv('roster.csv')
+        people = parse_csv('roster1.csv')
         serialized = [
             {
                 'name': p.name,
@@ -37,7 +37,7 @@ def create_assignments():
             gender = boat.get('gender', 'Mixed')
             boats.append(Boat(size=size, gender=gender))
 
-        people = parse_csv('roster.csv')
+        people = parse_csv('roster1.csv')
 
         result = build_boat(people, boats)
 

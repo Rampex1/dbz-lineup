@@ -1,75 +1,83 @@
-name,gender,weight,side
-Alan Ryan Deng,M,172,L
-Andy Li,M,188,L
-Brian Ly,M,160,L
-Daniel Krykhtin,M,208,L
-David Namgung,M,149,L
-Feng Jiang,M,127,L
-Frank Li,M,209,L
-Jimmy Xu,M,142,L
-Kiarash Takhsha,M,155,L
-Michael Li,M,132,L
-Olivier Pagé-Lajeunesse,M,200,L
-Rico Li,M,194,L
-Samuel Ren,M,170,L
-Shan Qi Yan,M,169,L
-Vassili Prokopenko,M,156,L
-Yutai Oki,M,211,L
-David Wang,M,161,R
-David Zhou,M,163,R
-Dory Song,M,206,R
-Hamza Khalfi,M,158,R
-Jad Ashkar,M,170,R
-Jessie Maeda-Yang,M,210,R
-Jiabao Blackburn,M,216,R
-Jun Ho Oh,M,147,R
-Justin Liu,M,198,R
-Luis Felipe Jarquin Romero,M,176,R
-Orlando Qiu,M,209,R
-Samuel Ha,M,121,R
-Sivabalan Muthurajan,M,163,R
-Will Chen,M,175,R
-William Tang,M,187,R
-David Payette,M,148,A
-Shawn Yat Sin,M,120,A
-Solomon Mao,M,189,A
-Tri Vinh Truong,M,155,A
-William Kallianiotis,M,177,A
-William Kiem Lafond,M,138,A
-Aaliyah Duong,F,118,L
-Andie Duong,F,137,L
-Bryana Sansalone,F,157,L
-Cassandra Duong,F,110,L
-Elodie Su,F,137,L
-Houwen Yao,F,168,L
-Jenny Chen,F,136,L
-Jessica Lin,F,154,L
-Jessica Shi,F,127,L
-Mikale Hum,F,158,L
-Myriam Gallant,F,119,L
-Rui Zhu,F,110,L
-Alina Weng,F,124,R
-Amelie Tao,F,153,R
-Catherine Zhu,F,126,R
-Celia Xu,F,173,R
-Devona Lok Wa Trinh,F,152,R
-Felicia Xie,F,173,R
-Flora Huang,F,145,R
-Han Ru Liu,F,153,R
-Jenny Mao,F,112,R
-Jordan Demetrius,F,136,R
-Léa Tian,F,103,R
-Lina Zheng,F,110,R
-Maëva Tremblay,F,139,R
-May Sun,F,116,R
-Meghan Gallagher,F,112,R
-Meng Jia Gu,F,144,R
-Michelle Weng,F,95,R
-Mollee Ye,F,111,R
-Ruizhi Wang,F,94,R
-Sophia Chen,F,129,R
-Sthefany Zhu,F,96,R
-Carolyn Yang,F,141,A
-Delia Xu,F,125,A
-Justine Lin,F,136,A
-Marie-Ève Hébert,F,138,A
+Name,Gender,Side,Weight
+Aaliyah Duong,F,L,145
+Alina Weng,F,R,120
+Amelie Tao,F,R,121
+Andie Duong,F,L,127
+Bryana Sansalone,F,L,140
+Carolyn Yang,F,L,130
+Cassandra Duong,F,L,125
+Catherine Zhu,F,L,161
+Celia Xu,F,R,126
+Delia Xu,F,L,167
+Devona Lok Wa Trinh,F,R,145
+Elodie Su,F,L,127
+Felicia Xie,F,R,150
+Flora Huang,F,R,118
+Han Ru Liu,F,R,135
+Houwen Yao,F,L,130
+Jenny Chen,F,L,95
+Jenny Mao,F,R,115
+Jessica Lin,F,L,178
+Jessica Shi,F,L,127
+Jordan Demetrius,F,R,115
+Justine Lin,F,L,145
+Lea Tian,F,R,153
+Lina Zheng,F,R,110
+Maeva Tremblay,F,R,130
+Marie-Eve Hebert,F,L,127
+May Sun,F,R,157
+Christine Wu,F,L,125
+Meghan Gallagher,F,R,145
+Meng Jia Gu,F,R,150
+Michelle Weng,F,R,103
+Mikale Hum,F,L,140
+Mollee Ye,F,R,150
+Myriam Gallant,F,L,165
+Rui Zhu,F,L,146
+Ruizhi Wang,F,R,125
+Sophia Chen,F,R,142
+Ednah Amoah,F,R,150
+Sthefany Zhu,F,R,100
+Alan Ryan Deng,M,L,165
+Wei Heng Gao,M,L,170
+Andy Li,M,L,167
+Brian Ly,M,L,170
+Daniel Krykhtin,M,L,214
+David Namgung,M,L,135
+David Payette,M,R,175
+David Wang,M,R,193
+David Zhou,M,R,148
+Dory Song,M,R,176
+Feng Jiang,M,L,185
+Frank Li,M,L,170
+Hamza Khalfi,M,R,186
+Jad Ashkar,M,R,153
+Jessie Maeda-Yang,M,R,134
+Jiabao Blackburn,M,R,165
+Jimmy Xu,M,L,195
+Jun Ho Oh,M,R,205
+Justin Liu,M,R,163
+Kia Takhsha,M,L,182
+Luis Romero,M,R,160
+Michael Li,M,L,136
+Olivier Pagé-Lajeunesse,M,L,198
+Orlando Qiu,M,R,170
+Rico Li,M,L,180
+Samuel Ha,M,R,155
+Samuel Ren,M,L,190
+Shan Qi Yan,M,L,190
+Shawn Yat Sin,M,L,160
+Sivabalan Muthurajan ,M,R,180
+Solomon Mao,M,L,145
+Vincent DVD,M,R,155
+Tri Vinh Truong,M,A,127
+Vassili Prokopenko,M,L,165
+Vincent,M,L,160
+Will Chen,M,R,146
+William Kallianiotis,M,L,200
+William Kiem Lafond,M,R,165
+William Tang,M,R,127
+Yutai Oki,M,L,176
+Alexander Liu,M,L,195
+Sonny,M,R,180
+Ednah Amoah,F,R,150

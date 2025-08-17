@@ -172,7 +172,7 @@ def build_boat(people: List[Person], boats: List[Boat]) -> Dict[int, Tuple[List[
 
 # Example usage:
 if __name__ == "__main__":
-    data = parse_csv("roster.csv")
+    data = parse_csv("roster1.csv")
 
     # Example boats
     boats = [
