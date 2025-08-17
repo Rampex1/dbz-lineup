@@ -1,0 +1,58 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# CRA app artifacts
+dbz-lineup/node_modules/
+dbz-lineup/build/
+dbz-lineup/dist/
+dbz-lineup/.cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+.mypy_cache/
+.venv/
+venv/
+.env
+.env.*
+
+# IDE/OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Root-only Node workspace files we don't want
+/package.json
+/package-lock.json
+
+# Unused duplicate CSV in CRA public (backend reads root roster.csv)
+/dbz-lineup/public/roster.csv
+# Dependency directories
+node_modules/
+.venv/
+
+# Python cache files
+__pycache__/
+
+# Log files
+*.log
+
+# Environment variables (optional but recommended)
+.env
+.env.local
+
+# Build artifacts
+dist/
+build/

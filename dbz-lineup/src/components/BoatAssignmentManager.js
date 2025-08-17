@@ -1,60 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Plus, Trash2, Users, Scale, CheckCircle, AlertCircle, Ship, UserCheck, User } from 'lucide-react';
 
-// People will be loaded from /public/roster.csv at runtime
-
-// Mock optimization function - replace with actual linear programming implementation
-const optimizeBoats = (people, boats) => {
-  // This is a simplified mock - in production, this would call your Python LP solver
-  const assignments = {};
-  let usedPeople = new Set();
-
-  boats.forEach((boat, boatIdx) => {
-    const availablePeople = people.filter((p, idx) => !usedPeople.has(idx));
-    let selectedPeople = [];
-
-    // Simple selection based on constraints
-    if (boat.gender === 'Open') {
-      selectedPeople = availablePeople.filter(p => p.gender === 'M').slice(0, boat.size);
-    } else if (boat.gender === 'Women') {
-      selectedPeople = availablePeople.filter(p => p.gender === 'F').slice(0, boat.size);
-    } else { // Mixed
-      const males = availablePeople.filter(p => p.gender === 'M').slice(0, boat.size / 2);
-      const females = availablePeople.filter(p => p.gender === 'F').slice(0, boat.size / 2);
-      selectedPeople = [...males, ...females];
-    }
-
-    // Mark as used
-    selectedPeople.forEach(person => {
-      const idx = people.findIndex(p => p.name === person.name);
-      usedPeople.add(idx);
-    });
-
-    // Split into left and right based on handedness
-    const left = selectedPeople.filter(p => p.side === 'L' || (p.side === 'A' && Math.random() < 0.5));
-    const right = selectedPeople.filter(p => !left.includes(p));
-
-    // Balance if needed
-    while (left.length < boat.size / 2 && right.length > boat.size / 2) {
-      const person = right.find(p => p.side === 'A');
-      if (person) {
-        right.splice(right.indexOf(person), 1);
-        left.push(person);
-      } else break;
-    }
-    while (right.length < boat.size / 2 && left.length > boat.size / 2) {
-      const person = left.find(p => p.side === 'A');
-      if (person) {
-        left.splice(left.indexOf(person), 1);
-        right.push(person);
-      } else break;
-    }
-
-    assignments[boatIdx] = { left, right };
-  });
-
-  return assignments;
-};
+// Backend API base URL
+const API_BASE = 'http://127.0.0.1:5000';
 
 const BoatAssignmentManager = () => {
   const [boats, setBoats] = useState([]);
@@ -64,32 +12,17 @@ const BoatAssignmentManager = () => {
   const [people, setPeople] = useState([]);
 
   useEffect(() => {
-    const loadRoster = async () => {
+    const loadPeople = async () => {
       try {
-        const response = await fetch((process.env.PUBLIC_URL || '') + '/roster.csv');
-        const text = await response.text();
-        const lines = text.trim().split(/\r?\n/);
-        // Remove header
-        if (lines.length > 0) lines.shift();
-        const parsed = lines
-          .map(line => line.trim())
-          .filter(Boolean)
-          .map(line => {
-            const [name, gender, weight, side] = line.split(',');
-            return {
-              name: name ? name.trim() : '',
-              gender: gender ? gender.trim() : '',
-              weight: weight ? parseFloat(weight) : 0,
-              side: side ? side.trim() : ''
-            };
-          });
-        setPeople(parsed);
-      } catch (error) {
-        console.error('Failed to load roster.csv', error);
+        const res = await fetch(`${API_BASE}/people`);
+        const data = await res.json();
+        setPeople(Array.isArray(data.people) ? data.people : []);
+      } catch (e) {
+        console.error('Failed to fetch people', e);
         setPeople([]);
       }
     };
-    loadRoster();
+    loadPeople();
   }, []);
 
   const addBoat = useCallback(() => {
@@ -106,13 +39,23 @@ const BoatAssignmentManager = () => {
   const generateAssignments = useCallback(async () => {
     if (boats.length === 0 || people.length === 0) return;
 
-    setIsLoading(true);
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    const assignments = optimizeBoats(people, boats);
-    setResults(assignments);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const payload = { boats: boats.map(b => ({ size: b.size, gender: b.gender })) };
+      const res = await fetch(`${API_BASE}/assignments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to create assignments');
+      setResults(data.assignments || {});
+    } catch (e) {
+      console.error(e);
+      setResults(null);
+    } finally {
+      setIsLoading(false);
+    }
   }, [boats, people]);
 
   const getTotalPeople = () => boats.reduce((sum, boat) => sum + boat.size, 0);
