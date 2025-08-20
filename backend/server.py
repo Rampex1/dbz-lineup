@@ -5,6 +5,7 @@ import csv
 import os
 from shutil import copyfile
 import gspread
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app)
@@ -15,9 +16,13 @@ ROSTER_FILE = os.path.join(BASE_DIR, 'roster.csv')
 ACTIVE_ROSTER_FILE = os.path.join(BASE_DIR, 'roster-active.csv')
 SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, 'google-sheets-credentials.json')
 
-# Google Sheet URL and sheet name
+# Google Sheet URL and sheet name for attendance
 SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1dqwB_jHAwzj5NmJdbe9SytnnqEpaDZfbGjkkwcIDtE0/edit'
 SHEET_NAME = 'Test'
+
+# Google Sheet ID and GID for lineup
+LINEUP_SHEET_ID = '1SZMIH8hu3vMTnZfVpRkCJLnR-Jsbr8JMiNn0L1MRWoI'
+LINEUP_SHEET_GID = '0'
 
 
 # Initialize roster-active.csv if it doesn't exist
@@ -72,6 +77,36 @@ def parse_attendance(data):
                     absent.append(name)
 
     return present, absent
+
+
+def import_lineup():
+    try:
+        # Construct the export URL for the lineup Google Sheet
+        url = f"https://docs.google.com/spreadsheets/d/{LINEUP_SHEET_ID}/export?format=csv&gid={LINEUP_SHEET_GID}"
+        # Load the sheet into a DataFrame
+        df = pd.read_csv(url)
+        # Validate required columns
+        required_columns = ['Name', 'Gender', 'Side', 'Weight']
+        if not all(col in df.columns for col in required_columns):
+            raise ValueError(f"Google Sheet must contain columns: {', '.join(required_columns)}")
+        # Save to roster.csv and roster-active.csv
+        df.to_csv(ROSTER_FILE, index=False)
+        df.to_csv(ACTIVE_ROSTER_FILE, index=False)
+        # Parse the CSV to return serialized data
+        people = parse_csv(ROSTER_FILE)
+        serialized = [
+            {
+                'name': p.name,
+                'gender': p.gender,
+                'weight': p.weight,
+                'side': p.side,
+                'active': True  # All imported people are active
+            }
+            for p in people
+        ]
+        return serialized
+    except Exception as exc:
+        raise Exception(f"Failed to import lineup: {str(exc)}")
 
 
 @app.route('/people', methods=['GET'])
@@ -191,6 +226,19 @@ def scrape_attendance():
             'message': 'Attendance scraped and roster updated successfully',
             'present': present,
             'absent': absent
+        }), 200
+    except Exception as exc:
+        return jsonify({'error': str(exc)}), 400
+
+
+@app.route('/people/import-lineup', methods=['POST'])
+def import_lineup_endpoint():
+    try:
+        # Import lineup and get serialized data
+        people = import_lineup()
+        return jsonify({
+            'message': 'Lineup imported successfully',
+            'people': people
         }), 200
     except Exception as exc:
         return jsonify({'error': str(exc)}), 400

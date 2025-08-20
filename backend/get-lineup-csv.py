@@ -12,5 +12,6 @@ df = pd.read_csv(url)
 
 # Save to CSV
 df.to_csv("roster.csv", index=False)
+df.to_csv("roster-active.csv", index=False)
 
 print("CSV file created successfully!")

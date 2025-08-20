@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Plus, Trash2, Users, Scale, CheckCircle, AlertCircle, Ship, UserCheck, User, ArrowRight, ArrowLeft, RefreshCw, ToggleRight, Download } from 'lucide-react';
+import { Plus, Trash2, Users, Scale, CheckCircle, AlertCircle, Ship, UserCheck, User, ArrowRight, ArrowLeft, RefreshCw, ToggleRight, Download, FileText } from 'lucide-react';
 
 // Backend API base URL
 const API_BASE = 'http://127.0.0.1:5000';
@@ -10,6 +10,10 @@ const BoatAssignmentManager = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentBoat, setCurrentBoat] = useState({ size: 20, gender: 'Mixed' });
   const [people, setPeople] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [lineup, setLineup] = useState([]);
+  const [isLineupLoading, setIsLineupLoading] = useState(false);
+  const [lineupError, setLineupError] = useState(null);
 
   useEffect(() => {
     loadPeople();
@@ -68,6 +72,37 @@ const BoatAssignmentManager = () => {
     } catch (e) {
       console.error('Failed to scrape attendance', e);
     }
+  };
+
+  const importLineup = async () => {
+    try {
+      setIsLineupLoading(true);
+      setLineupError(null);
+      const res = await fetch(`${API_BASE}/people/import-lineup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to import lineup');
+      setLineup(data.people || []);
+      await loadPeople();
+    } catch (e) {
+      console.error('Failed to import lineup', e);
+      setLineupError(e.message);
+    } finally {
+      setIsLineupLoading(false);
+    }
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+    importLineup();
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setLineup([]);
+    setLineupError(null);
   };
 
   const addBoat = useCallback(() => {
@@ -555,8 +590,77 @@ const BoatAssignmentManager = () => {
                 <Download className="w-5 h-5" />
                 Scrape Google Sheets
               </button>
+              <button
+                onClick={openModal}
+                className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+              >
+                <FileText className="w-5 h-5" />
+                Import Lineup
+              </button>
             </div>
           </div>
+
+          {/* Modal */}
+          {isModalOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-xl shadow-2xl p-6 max-w-4xl w-full max-h-[80vh] overflow-y-auto">
+                <div className="flex items-center gap-3 mb-6">
+                  <FileText className="w-8 h-8 text-indigo-600" />
+                  <h2 className="text-2xl font-bold text-gray-900">Imported Lineup</h2>
+                </div>
+
+                {isLineupLoading ? (
+                  <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Loading lineup...</p>
+                  </div>
+                ) : lineupError ? (
+                  <div className="text-center py-12 text-red-600">
+                    <AlertCircle className="w-12 h-12 mx-auto mb-4" />
+                    <p>{lineupError}</p>
+                  </div>
+                ) : lineup.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-indigo-50">
+                          <th className="px-4 py-3 text-sm font-semibold text-gray-900 border-b">Name</th>
+                          <th className="px-4 py-3 text-sm font-semibold text-gray-900 border-b">Gender</th>
+                          <th className="px-4 py-3 text-sm font-semibold text-gray-900 border-b">Side</th>
+                          <th className="px-4 py-3 text-sm font-semibold text-gray-900 border-b">Weight (lbs)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {lineup.map((person, idx) => (
+                          <tr key={idx} className="border-b hover:bg-gray-50">
+                            <td className="px-4 py-3 text-gray-900">{person.name}</td>
+                            <td className="px-4 py-3 text-gray-600">{person.gender === 'M' ? 'Male' : 'Female'}</td>
+                            <td className="px-4 py-3 text-gray-600">
+                              {person.side === 'A' ? 'Ambidextrous' : person.side === 'L' ? 'Left-handed' : 'Right-handed'}
+                            </td>
+                            <td className="px-4 py-3 text-gray-600">{person.weight}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-600">
+                    <p>No lineup data available</p>
+                  </div>
+                )}
+
+                <div className="mt-6 flex justify-end">
+                  <button
+                    onClick={closeModal}
+                    className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {people.length === 0 ? (
             <div className="bg-white rounded-xl shadow-lg p-12 text-center">

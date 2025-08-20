@@ -1,83 +1,71 @@
 Name,Gender,Side,Weight
-Aaliyah Duong,F,L,145
-Alina Weng,F,R,120
-Amelie Tao,F,R,121
-Andie Duong,F,L,127
-Bryana Sansalone,F,L,140
-Carolyn Yang,F,L,130
-Cassandra Duong,F,L,125
-Catherine Zhu,F,L,161
-Celia Xu,F,R,126
-Delia Xu,F,L,167
-Devona Lok Wa Trinh,F,R,145
-Elodie Su,F,L,127
-Felicia Xie,F,R,150
-Flora Huang,F,R,118
-Han Ru Liu,F,R,135
-Houwen Yao,F,L,130
-Jenny Chen,F,L,95
-Jenny Mao,F,R,115
-Jessica Lin,F,L,178
-Jessica Shi,F,L,127
-Jordan Demetrius,F,R,115
-Justine Lin,F,L,145
-Léa Tian,F,R,153
-Lina Zheng,F,R,110
-Maëva Tremblay,F,R,130
-Marie-Ève Hébert,F,L,127
-May Sun,F,R,157
-Christine Wu,F,L,125
-Meghan Gallagher,F,R,145
-Meng Jia Gu,F,R,150
-Michelle Weng,F,R,103
-Mikale Hum,F,L,140
-Mollee Ye,F,R,150
-Myriam Gallant,F,L,165
-Rui Zhu,F,L,146
-Ruizhi Wang,F,R,125
-Sophia Chen,F,R,142
-Ednah Amoah,F,R,150
-Sthefany Zhu,F,R,100
-Alan Ryan Deng,M,L,165
-Wei Heng Gao,M,L,170
-Andy Li,M,L,167
-Brian Ly,M,L,170
-Daniel Krykhtin,M,L,214
-David Namgung,M,L,135
-David Payette,M,R,175
-David Wang,M,R,193
-David Zhou,M,R,148
-Dory Song,M,R,176
-Feng Jiang,M,L,185
-Frank Li,M,L,170
-Hamza Khalfi,M,R,186
-Jad Ashkar,M,R,153
-Jessie Maeda-Yang,M,R,134
-Jiabao Blackburn,M,R,165
-Jimmy Xu,M,L,195
-Jun Ho Oh,M,R,205
-Justin Liu,M,R,163
-Kia Takhsha,M,L,182
-Luis Felipe Jarquin Romero,M,R,160
-Michael Li,M,L,136
-Olivier Pagé-Lajeunesse,M,L,198
-Orlando Qiu,M,R,170
-Rico Li,M,L,180
-Samuel Ha,M,R,155
-Samuel Ren,M,L,190
-Shan Qi Yan,M,L,190
-Shawn Yat Sin,M,L,160
-Sivabalan Muthurajan,M,R,180
-Solomon Mao,M,L,145
-Vincent DVD,M,R,155
-Tri Vinh Truong,M,A,127
-Vassili Prokopenko,M,L,165
-Vincent,M,L,160
-Will Chen,M,R,146
-William Kallianiotis,M,L,200
-William Kiem Lafond,M,R,165
-William Tang,M,R,127
-Yutai Oki,M,L,176
-Alexander Liu,M,L,195
-Sonny,M,R,180
-Ednah Amoah,F,R,150
+Aaliyah Duong,F,L,145.0
+Alina Weng,F,R,120.0
+Amelie Tao,F,R,121.0
+Andie Duong,F,L,127.0
+Bryana Sansalone,F,L,140.0
+Carolyn Yang,F,L,130.0
+Cassandra Duong,F,L,125.0
+Catherine Zhu,F,L,161.0
+Celia Xu,F,R,126.0
+Delia Xu,F,L,167.0
+Devona Lok Wa Trinh,F,R,145.0
+Elodie Su,F,L,127.0
+Felicia Xie,F,R,150.0
+Flora Huang,F,R,118.0
+Han Ru Liu,F,R,135.0
+Houwen Yao,F,L,130.0
+Jenny Chen,F,L,95.0
+Jenny Mao,F,R,115.0
+Jessica Lin,F,L,178.0
+Jessica Shi,F,L,127.0
+Jordan Demetrius,F,R,115.0
+Justine Lin,F,L,145.0
+Léa Tian,F,R,153.0
+Lina Zheng,F,R,110.0
+Maëva Tremblay,F,R,130.0
+Marie-Ève Hébert,F,L,127.0
+May Sun,F,R,157.0
+Meghan Gallagher,F,R,145.0
+Meng Jia Gu,F,R,150.0
+Michelle Weng,F,R,103.0
+Mikale Hum,F,L,140.0
+Mollee Ye,F,R,150.0
+Myriam Gallant,F,L,165.0
+Rui Zhu,F,L,146.0
+Ruizhi Wang,F,R,125.0
+Sthefany Zhu,F,R,100.0
+Daniel Krykhtin,M,L,214.0
+David Namgung,M,L,135.0
+David Payette,M,R,175.0
+David Wang,M,R,193.0
+David Zhou,M,R,148.0
+Dory Song,M,R,176.0
+Feng Jiang,M,L,185.0
+Frank Li,M,L,170.0
+Hamza Khalfi,M,R,186.0
+Jad Ashkar,M,R,153.0
+Jessie Maeda-Yang,M,R,134.0
+Jiabao Blackburn,M,R,165.0
+Jimmy Xu,M,L,195.0
+Jun Ho Oh,M,R,205.0
+Justin Liu,M,R,163.0
+Kia Takhsha,M,L,182.0
+Luis Felipe Jarquin Romero,M,R,160.0
+Michael Li,M,L,136.0
+Olivier Pagé-Lajeunesse,M,L,198.0
+Orlando Qiu,M,R,170.0
+Rico Li,M,L,180.0
+Samuel Ha,M,R,155.0
+Samuel Ren,M,L,190.0
+Shan Qi Yan,M,L,190.0
+Shawn Yat Sin,M,L,160.0
+Sivabalan Muthurajan,M,R,180.0
+Solomon Mao,M,L,145.0
+Tri Vinh Truong,M,A,127.0
+Vassili Prokopenko,M,L,165.0
+Will Chen,M,R,146.0
+William Kallianiotis,M,L,200.0
+William Kiem Lafond,M,R,165.0
+William Tang,M,R,127.0
+Yutai Oki,M,L,176.0
