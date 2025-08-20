@@ -4,13 +4,20 @@ from main import parse_csv, Boat, build_boat
 import csv
 import os
 from shutil import copyfile
+import gspread
 
 app = Flask(__name__)
 CORS(app)
 
 # File paths
-ROSTER_FILE = 'roster.csv'
-ACTIVE_ROSTER_FILE = 'roster-active.csv'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ROSTER_FILE = os.path.join(BASE_DIR, 'roster.csv')
+ACTIVE_ROSTER_FILE = os.path.join(BASE_DIR, 'roster-active.csv')
+SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, 'google-sheets-credentials.json')
+
+# Google Sheet URL and sheet name
+SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1dqwB_jHAwzj5NmJdbe9SytnnqEpaDZfbGjkkwcIDtE0/edit'
+SHEET_NAME = 'Test'
 
 
 # Initialize roster-active.csv if it doesn't exist
@@ -20,6 +27,51 @@ def initialize_active_roster():
             copyfile(ROSTER_FILE, ACTIVE_ROSTER_FILE)
         except FileNotFoundError:
             raise FileNotFoundError(f"Error: {ROSTER_FILE} not found. Please ensure it exists.")
+
+
+def get_google_sheet_data():
+    try:
+        # Authenticate with Google Sheets
+        gc = gspread.service_account(filename=SERVICE_ACCOUNT_FILE)
+        # Open the spreadsheet by URL
+        sh = gc.open_by_url(SPREADSHEET_URL)
+        # Select the worksheet/tab
+        worksheet = sh.worksheet(SHEET_NAME)
+        # Get all values from the sheet
+        return worksheet.get_all_values()
+    except Exception as exc:
+        raise Exception(f"Failed to scrape Google Sheet: {str(exc)}")
+
+
+def parse_attendance(data):
+    present = []
+    absent = []
+
+    for row in data:
+        for i, cell in enumerate(row):
+            cell = cell.strip()
+            if not cell:
+                continue
+
+            # Case 1: "TRUE"/"FALSE" then a name in the next cell
+            if cell.upper() in ("TRUE", "FALSE"):
+                if i + 1 < len(row) and row[i + 1].strip():
+                    name = row[i + 1].strip()
+                    if cell.upper() == "FALSE":
+                        present.append(name)
+                    else:
+                        absent.append(name)
+
+            # Case 2: Name followed by "TRUE"/"FALSE"
+            elif i + 1 < len(row) and row[i + 1].strip().upper() in ("TRUE", "FALSE"):
+                name = cell
+                status = row[i + 1].strip().upper()
+                if status == "FALSE":
+                    present.append(name)
+                else:
+                    absent.append(name)
+
+    return present, absent
 
 
 @app.route('/people', methods=['GET'])
@@ -100,6 +152,46 @@ def toggle_all_people():
             message = "All people deactivated"
 
         return jsonify({'message': message}), 200
+    except Exception as exc:
+        return jsonify({'error': str(exc)}), 400
+
+
+@app.route('/people/scrape-attendance', methods=['POST'])
+def scrape_attendance():
+    try:
+        initialize_active_roster()
+        all_people = parse_csv(ROSTER_FILE)
+        all_names = {p.name for p in all_people}
+
+        # Scrape Google Sheet data
+        data = get_google_sheet_data()
+        present, absent = parse_attendance(data)
+
+        # Validate names against roster.csv
+        invalid_names = [name for name in present + absent if name not in all_names]
+        if invalid_names:
+            return jsonify({'error': f"Invalid names in Google Sheet: {', '.join(invalid_names)}"}), 400
+
+        # Update roster-active.csv with present people
+        active_people = [p for p in all_people if p.name in present]
+
+        # Write updated active roster to file
+        with open(ACTIVE_ROSTER_FILE, 'w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=['Name', 'Gender', 'Side', 'Weight'])
+            writer.writeheader()
+            for p in active_people:
+                writer.writerow({
+                    'Name': p.name,
+                    'Gender': p.gender,
+                    'Side': p.side,
+                    'Weight': p.weight
+                })
+
+        return jsonify({
+            'message': 'Attendance scraped and roster updated successfully',
+            'present': present,
+            'absent': absent
+        }), 200
     except Exception as exc:
         return jsonify({'error': str(exc)}), 400
 

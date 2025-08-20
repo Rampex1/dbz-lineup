@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Plus, Trash2, Users, Scale, CheckCircle, AlertCircle, Ship, UserCheck, User, ArrowRight, ArrowLeft, RefreshCw, ToggleRight } from 'lucide-react';
+import { Plus, Trash2, Users, Scale, CheckCircle, AlertCircle, Ship, UserCheck, User, ArrowRight, ArrowLeft, RefreshCw, ToggleRight, Download } from 'lucide-react';
 
 // Backend API base URL
 const API_BASE = 'http://127.0.0.1:5000';
@@ -53,6 +53,20 @@ const BoatAssignmentManager = () => {
       await loadPeople();
     } catch (e) {
       console.error('Failed to toggle all people', e);
+    }
+  };
+
+  const scrapeAttendance = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/people/scrape-attendance`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to scrape attendance');
+      await loadPeople();
+    } catch (e) {
+      console.error('Failed to scrape attendance', e);
     }
   };
 
@@ -525,13 +539,23 @@ const BoatAssignmentManager = () => {
         <div className="mt-16 border-t border-gray-200 pt-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Team Roster</h2>
-            <button
-              onClick={toggleAllPeople}
-              className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 mx-auto"
-            >
-              <ToggleRight className="w-5 h-5" />
-              {people.every(p => p.active) ? 'Deactivate All' : 'Activate All'}
-            </button>
+            <p className="text-lg text-gray-600">Complete list of available team members</p>
+            <div className="flex justify-center gap-4 mt-4">
+              <button
+                onClick={toggleAllPeople}
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+              >
+                <ToggleRight className="w-5 h-5" />
+                {people.every(p => p.active) ? 'Deactivate All' : 'Activate All'}
+              </button>
+              <button
+                onClick={scrapeAttendance}
+                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+              >
+                <Download className="w-5 h-5" />
+                Scrape Google Sheets
+              </button>
+            </div>
           </div>
 
           {people.length === 0 ? (
