@@ -58,3 +58,4 @@ dist/
 build/
 
 /backend/google-sheets-credentials.jsonlineup/backend/google-sheets-credentials.json
+lineup/backend/google-sheets-credentials.json
