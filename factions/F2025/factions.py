@@ -14,7 +14,7 @@ INPUT_FILE = BASE_DIR / "factions.csv"
 TEAM_HIGHLIGHT = "David"
 OUTPUT_WEEKLY = BASE_DIR / "images/factions_weekly_progress.png"
 OUTPUT_DISTRIBUTION = BASE_DIR / "images/factions_score_distribution.png"
-OUTPUT_LEADERBOARD = BASE_DIR / "factions_top_10_mvp.png"
+OUTPUT_LEADERBOARD = BASE_DIR / "images/factions_top_10_mvp.png"
 
 
 def load_data(filepath):
@@ -118,7 +118,7 @@ def plot_score_distribution(df):
     print("Generating Score Distribution Graph...")
 
     # 1. Create Bins (0-9, 10-19, etc.)
-    bins = range(0, 90, 10)
+    bins = range(0, 91, 10)
     labels = [f"{i}-{i + 9}" for i in bins[:-1]]
     # Use .copy() to avoid SettingWithCopyWarning if df is a slice
     df = df.copy()
@@ -293,6 +293,95 @@ def plot_top_10_leaderboard(df):
     print(f"Saved: {OUTPUT_LEADERBOARD}")
     # plt.show() # Uncomment to display window
 
+    # 7. Print complete ranking
+    print("\n" + "=" * 50)
+    print("COMPLETE RANKING - ALL PARTICIPANTS")
+    print("=" * 50)
+    full_ranking = df_filtered.sort_values("TOTAL", ascending=False)
+    for rank, (idx, row) in enumerate(full_ranking.iterrows(), start=1):
+        print(f"{rank:3d}. {row['Name']:<30s} {int(row['TOTAL']):>4d} points")
+    print("=" * 50 + "\n")
+
+
+def create_balanced_teams(df, num_teams=5):
+    """
+    Creates balanced teams based on total points.
+    Constraint: Meng Jia, David Zhou, Feng, Orlando, Vincent must be on different teams.
+    """
+    print("Creating Balanced Teams...")
+
+    # 1. Filter out 'Challenge' entries
+    df_filtered = df[~df["Name"].str.contains("Challenge", case=False, na=False)].copy()
+
+    # 2. Sort by TOTAL points (Descending)
+    df_sorted = df_filtered.sort_values("TOTAL", ascending=False).reset_index(drop=True)
+
+    # 3. Define constrained players (must be on different teams)
+    constrained_players = ["Meng Jia", "David Zhou", "Feng", "Orlando", "Vincent"]
+
+    # 4. Initialize teams
+    teams = {f"Team {i + 1}": {"players": [], "total_points": 0} for i in range(num_teams)}
+    team_names = list(teams.keys())
+
+    # 5. Assign constrained players to different teams first
+    constrained_assigned = []
+    for i, player_name in enumerate(constrained_players):
+        # Find player in dataframe (case-insensitive partial match)
+        player_row = df_sorted[df_sorted["Name"].str.contains(player_name, case=False, na=False)]
+        if not player_row.empty:
+            player_row = player_row.iloc[0]
+            team_name = team_names[i % num_teams]
+            teams[team_name]["players"].append({
+                "name": player_row["Name"],
+                "points": player_row["TOTAL"]
+            })
+            teams[team_name]["total_points"] += player_row["TOTAL"]
+            constrained_assigned.append(player_row["Name"])
+            print(f"Assigned {player_row['Name']} ({int(player_row['TOTAL'])} pts) to {team_name}")
+
+    # 6. Get remaining players
+    remaining_players = df_sorted[~df_sorted["Name"].isin(constrained_assigned)].copy()
+
+    # 7. Assign remaining players using a balanced approach (snake draft)
+    for idx, row in remaining_players.iterrows():
+        # Find team with lowest total points
+        min_team = min(teams.items(), key=lambda x: x[1]["total_points"])
+        team_name = min_team[0]
+
+        teams[team_name]["players"].append({
+            "name": row["Name"],
+            "points": row["TOTAL"]
+        })
+        teams[team_name]["total_points"] += row["TOTAL"]
+
+    # 8. Print results
+    print("\n" + "=" * 70)
+    print("BALANCED TEAM ASSIGNMENTS")
+    print("=" * 70)
+
+    for team_name in team_names:
+        team = teams[team_name]
+        print(f"\n{team_name} - Total Points: {int(team['total_points'])}")
+        print("-" * 70)
+        for i, player in enumerate(team["players"], start=1):
+            print(f"  {i:2d}. {player['name']:<40s} {int(player['points']):>4d} pts")
+
+    print("\n" + "=" * 70)
+    print("TEAM POINT SUMMARY")
+    print("=" * 70)
+    for team_name in team_names:
+        print(f"{team_name}: {int(teams[team_name]['total_points']):>5d} points "
+              f"({len(teams[team_name]['players'])} players)")
+
+    # Calculate balance metrics
+    total_points = [teams[team]["total_points"] for team in team_names]
+    avg_points = sum(total_points) / len(total_points)
+    max_diff = max(total_points) - min(total_points)
+    print(f"\nAverage Team Points: {int(avg_points)}")
+    print(f"Max Point Difference: {int(max_diff)}")
+    print("=" * 70 + "\n")
+
+    return teams
 
 # --- MAIN EXECUTION ---
 if __name__ == "__main__":
@@ -301,6 +390,7 @@ if __name__ == "__main__":
         plot_team_progress(df)
         plot_score_distribution(df)
         plot_top_10_leaderboard(df)
+        create_balanced_teams(df)
 
         # Display the plots at the end if you want them to pop up one by one
         plt.show()
